@@ -1,0 +1,5 @@
+db ansible_host=37.48.120.228
+app ansible_host=37.48.90.219
+[production]
+db
+app

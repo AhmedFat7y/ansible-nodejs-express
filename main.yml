@@ -1,0 +1,58 @@
+# - hosts: app
+#   vars_files:
+#     - vars.yml
+#     - vault.yml
+#   vars:
+#     project_location: /home/{{ deployer_user }}/bot
+#     home_dir: /home/{{ deployer_user }}
+#     ansible_become_pass: "{{vault_ansible_become_pass}}"
+#     deployer_pass: "{{vault_deployer_pass}}"
+#     DB_HOST: "{{vault_db_host}}"
+#     DB_PORT: "{{vault_db_port}}"
+#     DB_DATABASE: "{{vault_db_database}}"
+#     DB_USERNAME: "{{vault_db_username}}"
+#     DB_PASSWORD: "{{vault_db_password}}"
+#     LINODE_API_KEY: "{{vault_linode_api_key}}"
+#   remote_user: "{{ sudo_user }}"
+#   become: True
+#   tasks:
+#     - name: Install basic packages and so on
+#       include_role:
+#         name: basics
+#       when: server_state ==  'SETUP'
+
+#     - name: Create User that will handle running the app and deploy updates
+#       include_role:
+#         name: create-deployer-user
+#       when: server_state ==  'SETUP'
+
+#     - name: Configure SSH service to disable password login
+#       include_role:
+#         name: configure-sshd-service
+#       when: server_state ==  'SETUP'
+
+- hosts: app
+  vars_files:
+    - vars.yml
+    - vault.yml
+  vars:
+    project_location: /home/{{ deployer_user }}/bot
+    home_dir: /home/{{ deployer_user }}
+    ansible_become_pass: "{{vault_ansible_become_pass}}"
+    deployer_pass: "{{vault_deployer_pass}}"
+    DB_HOST: "{{vault_db_host}}"
+    DB_PORT: "{{vault_db_port}}"
+    DB_DATABASE: "{{vault_db_database}}"
+    DB_USERNAME: "{{vault_db_username}}"
+    DB_PASSWORD: "{{vault_db_password}}"
+    LINODE_API_KEY: "{{vault_linode_api_key}}"
+  remote_user: "{{ deployer_user }}"
+  tasks:
+    - name: Install nvm and node
+      include_role:
+        name: nodejs
+      when: server_state == 'SETUP'
+    # - name: deploy-bot-nodejs
+    #   include_role:
+    #     name: nodejs
+    #   when: server_state == 'SETUP'
